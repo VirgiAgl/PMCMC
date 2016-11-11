@@ -17,7 +17,7 @@ obs_update = function (x_k, N, phi=0.95, mu=0.9, sigma_2= 0.5){
   error_value = rnorm(N, mean=0, sd=1)
   y_k = x_k + eta*error_value
   return (y_k)
-}
+}Q
 
 # iteration steps of the state space model 
 t = 20 
@@ -47,6 +47,8 @@ eta_2 = (sigma_2/(1-phi^2))/5
 eta = sqrt(eta_2)
 
 
+
+
 # Traslate the model in state space form
 toy_model_state_space <- function(phi, mu, sigma,y_values, x_values) {
 Tt = matrix(phi)
@@ -66,7 +68,6 @@ sp = toy_model_state_space(phi=phi, mu=mu, sigma=sigma ,y_values=y_values, x_val
 ans <- fkf(a0 = sp$a0, P0 = sp$P0, dt = sp$dt, ct = sp$ct, Tt = sp$Tt,
            Zt = sp$Zt, HHt = sp$HHt, GGt = sp$GGt, yt = sp$yt)
 
-
 # Store the values for the plot the predictive distributions
 predicted_exp_value = t(cbind(ans$at[1], ans$att))
 predicted_var = as.matrix(c(ans$Pt[1], as.vector(ans$Ptt)))
@@ -82,6 +83,6 @@ n_values=as.matrix(table(data_frame_melt$variable))
 
 
 # Plot the sequence of predictive distributions
-ggplot(data_frame_melt, aes(x=value, y = x_values, group = variable, colour = "black")) +  geom_point(size=0.5, colour="#000099") + ggtitle("Predictive densities") +
+ggplot(data_frame_melt, aes(x=value, y = x_values, group = variable, colour = "black")) +  geom_point(size=0.05, colour="#000099") + ggtitle("Predictive densities") +
   labs(x="Time index",y="State values") + facet_wrap(~variable, ncol = n_values[1] )  + theme(strip.background = element_blank(), strip.text.x = element_blank())
 

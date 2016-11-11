@@ -5,6 +5,7 @@ SMC = function(N, calculate_weight, state_update, observed_process){
   # state_update is a function specifying the SSM
   t = length(observed_process)
   particles_in_time = matrix(NA, ncol=N, nrow= t) # N particles at t timesteps
+  particle_mean_in_time = rep(NA, t) # N particles at t timesteps
   weights_in_time = matrix(NA, ncol=N, nrow= t) # N weights at t timesteps
   particles_in_time[1,] = rnorm(N, mean=0, sd=1) # Initialise with proposal density
   
@@ -26,10 +27,12 @@ SMC = function(N, calculate_weight, state_update, observed_process){
       particles_in_time[,1:N] = particles_in_time[,resample_index]
       resample_count = resample_count + 1
     }
+    
+    particle_mean_in_time[i] = sum(particles_in_time[i,])/N
   }
   
   cat(100.0*(resample_count / t), "% of timesteps we resample")
   
-  out = list(particles_in_time=particles_in_time)
+  out = list(particles_in_time=particles_in_time, particle_mean_in_time=particle_mean_in_time)
   return(out)
 }
