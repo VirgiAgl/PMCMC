@@ -5,6 +5,7 @@ library(reshape2)
 # State space model - toy example
 ##################################################################
 
+
 state_update = function(x_k, phi, mu, sigma){
   error_value = rnorm(1, mean=0, sd=1)
   x_k1 = mu + phi*(x_k-mu) + sigma*error_value
@@ -17,6 +18,7 @@ obs_update = function (x_k, phi, eta){
   return (y_k)
 }
 
+
 ##################################################################
 # Some plotting functions
 ##################################################################
@@ -25,9 +27,24 @@ plot_processes_in_time = function(process_dataframe){
   # column each for observed and latent, and plots 
   # as lines in time with labels determined by column 
   # headings in process dataframe
-  data_df$time = 1:t
+  data_df$time = 1:nrow(data_df)
   melted_data_df = melt(data_df, id.vars='time')
   ggplot(melted_data_df, aes(x=time, y = value, group = variable, colour = variable)) +   geom_line()
+}
+
+plot_particles_and_latent_process = function(particles_in_time, latent_process){
+  data_df = data.frame(p=particles_in_time)
+  data_df$time = 1:nrow(data_df)
+  melted_data_df = melt(data_df, id.vars='time')
+  melted_data_df$type = 'particles'
+  latent_df = data.frame(l=latent_process)
+  latent_df$time = 1:nrow(latent_df)
+  melted_latent_df = melt(latent_df, id.vars='time')
+  melted_latent_df$type = 'latent variables'
+  df = rbind(melted_data_df, melted_latent_df)
+  head(df)
+  ggplot(df, aes(x=time, y = value, group = variable, colour = variable, linetype=type, alpha=0.8)) +   geom_line() +guides(colour=FALSE, alpha=FALSE)
+  
 }
 
 
@@ -61,7 +78,6 @@ for (i in 2:t){
 # plot the evolution of the process
 process_dataframe = data.frame(observed=observed_process, latent=latent_process)
 plot_processes_in_time(process_dataframe)
-
 
 
 ##################################################################
@@ -105,12 +121,7 @@ cat(100.0*(resample_count / t), "% of timesteps we resample")
 ##################################################################
 
 # plot for the particles trajectories over the state space
-particles_and_latent_process = cbind(particles_in_time, latent_process)
-plot(particles_in_time[,1], type="l", ylim = c(min(particles_and_latent_process),max(particles_and_latent_process)))
-for (i in 2:N){
-  lines(particles_in_time[,i], type="l", col=i+10)
-}
-lines(latent_process, col="red", lty=2)
+plot_particles_and_latent_process(particles_in_time, latent_process)
 
 
 ##################################################################
