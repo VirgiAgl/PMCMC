@@ -94,5 +94,9 @@ for (i in 2:N){
 lines(x_values, col="red", lty=2)
 
 
+##################################################################
+# Run Kalman filter for comparison of linear guassian SSMs
+##################################################################
+
 # kalman filter
 #fkf(a0=x_values, as.matrix(1), as.matrix(mu-phi*mu), as.matrix(0), Tt=as.matrix(phi), Zt=as.matrix(1), HHt=as.matrix(sigma), GGt=as.matrix(eta), yt=as.matrix(y_values) )
