@@ -23,7 +23,7 @@ SMC = function(N, calculate_weight, state_update, observed_process){
     ESS = sum((weights_in_time[i,])^2)^-1 
     if (ESS<N/2){
       #only resample if weights are very variable such that ESS is small
-      resample_index = sample(1:N, replace=TRUE, prob=weights_in_time[1,])
+      resample_index = sample(1:N, replace=TRUE, prob=weights_in_time[i,])
       particles_in_time[,1:N] = particles_in_time[,resample_index]
       resample_count = resample_count + 1
     }

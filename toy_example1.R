@@ -10,11 +10,10 @@ t = 100 # num of iters
 # SSM params
 phi = 0.95
 mu = 0.9
-sigma_2 = 5
+sigma_2 = 0.01
 sigma = sqrt(sigma_2)
 eta_2 = (sigma_2/(1-phi^2))/5
 eta = sqrt(eta_2)
-
 
 toy_state_update = function(x_k){
   error_value = rnorm(1, mean=0, sd=1)
@@ -56,7 +55,7 @@ calculate_weight_toy = function(observed_val, particles_vals){
 # Use SMC/particle filter to sample from underlying process X
 ##################################################################
 
-N = 10  #number of particles 
+N = 10000  #number of particles 
 
 #run the SMC for the state space model
 smc_output = SMC(N=N, calculate_weight=calculate_weight_toy, state_update=toy_state_update, observed_process=observed_process_toy)
