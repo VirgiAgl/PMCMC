@@ -2,35 +2,6 @@ library(ggplot2)
 library(reshape2)
 
 ##################################################################
-# Some plotting functions
-##################################################################
-plot_processes_in_time = function(process_dataframe){
-  # Takes a dataframe of 1d processes, e.g. one
-  # column each for observed and latent, and plots 
-  # as lines in time with labels determined by column 
-  # headings in process dataframe
-  process_dataframe$time = 1:nrow(process_dataframe)
-  melted_data_df = melt(process_dataframe, id.vars='time')
-  ggplot(melted_data_df, aes(x=time, y = value, group = variable, colour = variable)) +   geom_line()
-}
-
-plot_particles_and_latent_process = function(particles_in_time, latent_process){
-  data_df = data.frame(p=particles_in_time)
-  data_df$time = 1:nrow(data_df)
-  melted_data_df = melt(data_df, id.vars='time')
-  melted_data_df$type = 'particles'
-  latent_df = data.frame(l=latent_process)
-  latent_df$time = 1:nrow(latent_df)
-  melted_latent_df = melt(latent_df, id.vars='time')
-  melted_latent_df$type = 'latent process'
-  df = rbind(melted_data_df, melted_latent_df)
-  head(df)
-  ggplot(df, aes(x=time, y = value, group = variable, colour = variable, linetype=type, alpha=0.8)) +   geom_line() +guides(colour=FALSE, alpha=FALSE)
-  
-}
-
-
-##################################################################
 # State space model - toy example
 ##################################################################
 ##################################################################
@@ -88,42 +59,6 @@ calculate_weight_toy = function(observed_val, particles_vals){
 ##################################################################
 # Use SMC/particle filter to sample from underlying process X
 ##################################################################
-
-SMC = function(N, calculate_weight, state_update, observed_process){
-  # Function to perform SMC for a state space model. 
-  # N is desired number of particles
-  # calculate_weight is a function to calculate the weight at each timestep
-  # state_update is a function specifying the SSM
-  t = length(observed_process)
-  particles_in_time = matrix(NA, ncol=N, nrow= t) # N particles at t timesteps
-  weights_in_time = matrix(NA, ncol=N, nrow= t) # N weights at t timesteps
-  particles_in_time[1,] = rnorm(N, mean=0, sd=1) # Initialise with proposal density
-  
-  resample_count = 0
-  
-  for (i in 1:t){
-    if (i >= 2) { # All steps other than 1st
-      particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update)#phi=phi, mu=mu, sigma=sigma)
-    }
-    
-    weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,])
-    weight_norm = weight/sum(weight)
-    weights_in_time[i,] = weight_norm
-    
-    ESS = sum((weights_in_time[i,])^2)^-1 
-    if (ESS<N/2){
-      #only resample if weights are very variable such that ESS is small
-      resample_index = sample(1:N, replace=TRUE, prob=weights_in_time[1,])
-      particles_in_time[,1:N] = particles_in_time[,resample_index]
-      resample_count = resample_count + 1
-    }
-  }
-  
-  cat(100.0*(resample_count / t), "% of timesteps we resample")
-  
-  out = list(particles_in_time=particles_in_time)
-  return(out)
-}
 
 N = 10  #number of particles 
 
