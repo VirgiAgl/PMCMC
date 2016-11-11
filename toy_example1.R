@@ -89,13 +89,12 @@ calculate_weight_toy = function(observed_val, particles_vals){
 # Use SMC/particle filter to sample from underlying process X
 ##################################################################
 
-SMC = function(N, t, calculate_weight, state_update, observed_process){
+SMC = function(N, calculate_weight, state_update, observed_process){
   # Function to perform SMC for a state space model. 
   # N is desired number of particles
-  # t is number of timesteps
   # calculate_weight is a function to calculate the weight at each timestep
   # state_update is a function specifying the SSM
-  
+  t = length(observed_process)
   particles_in_time = matrix(NA, ncol=N, nrow= t) # N particles at t timesteps
   weights_in_time = matrix(NA, ncol=N, nrow= t) # N weights at t timesteps
   particles_in_time[1,] = rnorm(N, mean=0, sd=1) # Initialise with proposal density
@@ -122,16 +121,15 @@ SMC = function(N, t, calculate_weight, state_update, observed_process){
   
   cat(100.0*(resample_count / t), "% of timesteps we resample")
   
-  out = list(particles_in_time=particles_in_time, latent_process=latent_process)
+  out = list(particles_in_time=particles_in_time)
   return(out)
 }
 
 N = 10  #number of particles 
 
 #run the SMC for the state space model
-smc_output = SMC(N=N, t=t, calculate_weight=calculate_weight_toy, state_update=toy_state_update, observed_process=observed_process_toy)
+smc_output = SMC(N=N, calculate_weight=calculate_weight_toy, state_update=toy_state_update, observed_process=observed_process_toy)
 particles_in_time = smc_output$particles_in_time
-latent_process = smc_output$latent_process
 
-# plot for the particles trajectories over the state space
+# plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
 plot_particles_and_latent_process(particles_in_time, latent_process)
