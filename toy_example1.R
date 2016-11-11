@@ -55,7 +55,7 @@ calculate_weight_toy = function(observed_val, particles_vals){
 # Use SMC/particle filter to sample from underlying process X
 ##################################################################
 
-N = 10000  #number of particles 
+N = 100  #number of particles 
 
 #run the SMC for the state space model
 smc_output = SMC(N=N, calculate_weight=calculate_weight_toy, state_update=toy_state_update, observed_process=observed_process_toy)
@@ -63,7 +63,7 @@ particles_in_time = smc_output$particles_in_time
 particle_mean_in_time = smc_output$particle_mean_in_time
 
 # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
-plot_particles_and_latent_process(particles_in_time, latent_process)
+plot_particles_and_latent_process(particles_in_time, latent_process_toy)
 
 ##################################################################
 # Kalman filter for predictive distribution
@@ -101,8 +101,8 @@ data_frame$x_values = x
 data_frame_melt = melt(data_frame, id=c("x_values"))
 n_values=as.matrix(table(data_frame_melt$variable))
 
-particle_means_df = data.frame(means = particle_mean_in_time[1:20])
-particle_means_df$variable = colnames(data_frame)[1:20]
+particle_means_df = data.frame(means = particle_mean_in_time[1:21])
+particle_means_df$variable = colnames(data_frame)[1:21]
   
 # Plot the sequence of predictive distributions
 plot = ggplot() +  
