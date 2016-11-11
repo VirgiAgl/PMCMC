@@ -1,3 +1,5 @@
+library(ggplot2)
+library(reshape2)
 
 ##################################################################
 # State space model - toy example
@@ -15,6 +17,19 @@ obs_update = function (x_k, phi, eta){
   return (y_k)
 }
 
+##################################################################
+# Some plotting functions
+##################################################################
+plot_processes_in_time = function(process_dataframe){
+  # Takes a dataframe of 1d processes, e.g. one
+  # column each for observed and latent, and plots 
+  # as lines in time with labels determined by column 
+  # headings in process dataframe
+  data_df$time = 1:t
+  melted_data_df = melt(data_df, id.vars='time')
+  ggplot(melted_data_df, aes(x=time, y = value, group = variable, colour = variable)) +   geom_line()
+}
+
 
 ##################################################################
 # Generate some observations using the SSM
@@ -30,22 +45,23 @@ sigma = sqrt(sigma_2)
 eta_2 = (sigma_2/(1-phi^2))/5
 eta = sqrt(eta_2)
 
-# initialise process X (unobserved) and Y (observed)
-x_values = vector(length = t) # to store process X in time
-y_values= vector(length = t) # to store observations associated with X
+# initialise process X (latent) and Y (observed)
+latent_process = vector(length = t) # to store process X in time
+observed_process= vector(length = t) # to store observations associated with X
 x1 = rnorm(1, mean=0, sd=1) # pick starting point from rnorm 
-x_values[1] = x1 # store starting point
-y_values[1] = obs_update(x_k = x_values[1], phi=phi, eta=eta) # store first observation
+latent_process[1] = x1 # store starting point
+observed_process[1] = obs_update(x_k = latent_process[1], phi=phi, eta=eta) # store first observation
 
-# propogate X  and Y in time by SSM
+# propogate X (latent) and Y (observed) in time by SSM
 for (i in 2:t){
-  x_values[i] = state_update(x_k = x_values[i-1], phi=phi, mu=mu, sigma=sigma)
-  y_values[i] = obs_update(x_k = x_values[i], phi=phi, eta=eta)
+  latent_process[i] = state_update(x_k = latent_process[i-1], phi=phi, mu=mu, sigma=sigma)
+  observed_process[i] = obs_update(x_k = latent_process[i], phi=phi, eta=eta)
 }
 
 # plot the evolution of the process
-plot(y_values, type= "l")
-lines(x_values, col="red")
+process_dataframe = data.frame(observed=observed_process, latent=latent_process)
+plot_processes_in_time(process_dataframe)
+
 
 
 ##################################################################
@@ -54,29 +70,29 @@ lines(x_values, col="red")
 
 # Initialise N particles
 N = 10  #number of particles 
-matrix_X = matrix(NA, ncol=N, nrow= t) # N particles at t timesteps
-matrix_W = matrix(NA, ncol=N, nrow= t) # N weights at t timesteps
-matrix_X[1,] = rnorm(N, mean=0, sd=1) # Initialise with proposal density
+particles_in_time = matrix(NA, ncol=N, nrow= t) # N particles at t timesteps
+weights_in_time = matrix(NA, ncol=N, nrow= t) # N weights at t timesteps
+particles_in_time[1,] = rnorm(N, mean=0, sd=1) # Initialise with proposal density
 
 resample_count = 0
 
 for (i in 1:t){
   if (i >= 2) { # All steps other than 1st
-    matrix_X[i,] = sapply(X = matrix_X[i-1,], FUN = state_update, phi=phi, mu=mu, sigma=sigma)
+    particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update, phi=phi, mu=mu, sigma=sigma)
   }
   
   # This weight calculation is SSM dependant
-  prob_argument = (y_values[i]-matrix_X[i,])/eta
+  prob_argument = (observed_process[i]-particles_in_time[i,])/eta
   weight  = dnorm(prob_argument, mean=0, sd=1) # weights here are from prob density g evaulated at y1|x_1 for all steps
   
   weight_norm = weight/sum(weight)
-  matrix_W[i,] = weight_norm
+  weights_in_time[i,] = weight_norm
   
-  ESS = sum((matrix_W[i,])^2)^-1 
+  ESS = sum((weights_in_time[i,])^2)^-1 
   if (ESS<N/2){
     #only resample if weights are very variable such that ESS is small
-    resample_index = sample(1:N, replace=TRUE, prob=matrix_W[1,])
-    matrix_X[,1:N] = matrix_X[,resample_index]
+    resample_index = sample(1:N, replace=TRUE, prob=weights_in_time[1,])
+    particles_in_time[,1:N] = particles_in_time[,resample_index]
     resample_count = resample_count + 1
   }
 }
@@ -89,13 +105,12 @@ cat(100.0*(resample_count / t), "% of timesteps we resample")
 ##################################################################
 
 # plot for the particles trajectories over the state space
-particles_and_latent_process = cbind(matrix_X, x_values)
-
-plot(matrix_X[,1], type="l", ylim = c(min(particles_and_latent_process),max(particles_and_latent_process)))
+particles_and_latent_process = cbind(particles_in_time, latent_process)
+plot(particles_in_time[,1], type="l", ylim = c(min(particles_and_latent_process),max(particles_and_latent_process)))
 for (i in 2:N){
-  lines(matrix_X[,i], type="l", col=i+10)
+  lines(particles_in_time[,i], type="l", col=i+10)
 }
-lines(x_values, col="red", lty=2)
+lines(latent_process, col="red", lty=2)
 
 
 ##################################################################
@@ -103,4 +118,4 @@ lines(x_values, col="red", lty=2)
 ##################################################################
 
 # kalman filter
-#fkf(a0=x_values, as.matrix(1), as.matrix(mu-phi*mu), as.matrix(0), Tt=as.matrix(phi), Zt=as.matrix(1), HHt=as.matrix(sigma), GGt=as.matrix(eta), yt=as.matrix(y_values) )
+#fkf(a0=latent_process, as.matrix(1), as.matrix(mu-phi*mu), as.matrix(0), Tt=as.matrix(phi), Zt=as.matrix(1), HHt=as.matrix(sigma), GGt=as.matrix(eta), yt=as.matrix(observed_process) )
