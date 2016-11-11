@@ -65,14 +65,16 @@ for (i in 1:t){
     matrix_X[i,] = sapply(X = matrix_X[i-1,], FUN = state_update, phi=phi, mu=mu, sigma=sigma)
   }
   
+  # This weight calculation is SSM dependant
   prob_argument = (y_values[i]-matrix_X[i,])/eta
   weight  = dnorm(prob_argument, mean=0, sd=1) # weights here are from prob density g evaulated at y1|x_1 for all steps
+  
   weight_norm = weight/sum(weight)
   matrix_W[i,] = weight_norm
   
   ESS = sum((matrix_W[i,])^2)^-1 
-  
   if (ESS<N/2){
+    #only resample if weights are very variable such that ESS is small
     resample_index = sample(1:N, replace=TRUE, prob=matrix_W[1,])
     matrix_X[,1:N] = matrix_X[,resample_index]
     resample_count = resample_count + 1
@@ -87,7 +89,9 @@ cat(100.0*(resample_count / t), "% of timesteps we resample")
 ##################################################################
 
 # plot for the particles trajectories over the state space
-plot(matrix_X[,1], type="l", ylim = c(min(matrix_X),max(matrix_X)))
+particles_and_latent_process = cbind(matrix_X, x_values)
+
+plot(matrix_X[,1], type="l", ylim = c(min(particles_and_latent_process),max(particles_and_latent_process)))
 for (i in 2:N){
   lines(matrix_X[,i], type="l", col=i+10)
 }
