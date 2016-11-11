@@ -13,7 +13,7 @@ SMC = function(N, calculate_weight, state_update, observed_process){
   
   for (i in 1:t){
     if (i >= 2) { # All steps other than 1st
-      particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update)#phi=phi, mu=mu, sigma=sigma)
+      particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update, k=i)#phi=phi, mu=mu, sigma=sigma)
     }
     
     weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,])

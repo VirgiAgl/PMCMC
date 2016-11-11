@@ -15,7 +15,7 @@ sigma = sqrt(sigma_2)
 eta_2 = (sigma_2/(1-phi^2))/5
 eta = sqrt(eta_2)
 
-toy_state_update = function(x_k){
+toy_state_update = function(x_k, k){
   error_value = rnorm(1, mean=0, sd=1)
   x_k1 = mu + phi*(x_k-mu) + sigma*error_value
   return (x_k1)  
