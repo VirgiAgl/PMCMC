@@ -103,13 +103,16 @@ n_values=as.matrix(table(data_frame_melt$variable))
 
 particle_means_df = data.frame(means = particle_mean_in_time[1:21])
 particle_means_df$variable = colnames(data_frame)[1:21]
-  
+
+data_frame_melt$variable = factor(data_frame_melt$variable, levels=c('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16','V17','V18','V19','V20','V21'))
+particle_means_df$variable = factor(particle_means_df$variable, levels = c('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16','V17','V18','V19','V20','V21'))
+
 # Plot the sequence of predictive distributions
 plot = ggplot() +  
   geom_point(data=data_frame_melt, aes(x=value, y = x_values, group = variable, colour = "black"), size=0.05, colour="#000099") + 
   geom_point(data = particle_means_df, aes(x=0, y = means, colour = "red", group = variable, size=20)) +
   ggtitle("Predictive densities") +
   labs(x="Time index",y="State values") + 
-  facet_wrap(~variable, ncol = n_values[1] )  + 
+  facet_wrap(~variable, ncol = n_values[1] )+
   theme(strip.background = element_blank(), strip.text.x = element_blank())
 plot
