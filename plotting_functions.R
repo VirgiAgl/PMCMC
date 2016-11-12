@@ -28,3 +28,14 @@ plot_particles_and_latent_process = function(particles_in_time, latent_process){
   ggplot(df, aes(x=time, y = value, group = variable, colour = variable, linetype=type, alpha=0.8)) +   geom_line() +guides(colour=FALSE, alpha=FALSE)
   
 }
+
+
+tracePlot = function(X, n_iter, title){
+    plot = qplot(seq(from= 1, to=n_iter+1, by=1), X ,geom="point", main="",
+    xlab="Iteration index", ylab=title, xlim=c(0,n_iter+1), alpha = I(1/1000), size=I(2.5)) +
+    theme(axis.title.x = element_text(size = 12), title = element_text(colour='black'),
+    axis.text.x=element_text(colour="black"), axis.text.y=element_text(colour="black"),
+    axis.line = element_line(colour="black", size = 1, linetype = "solid"))+
+    geom_point(size=2, shape=19, alpha=0.1)
+    return(plot)
+}

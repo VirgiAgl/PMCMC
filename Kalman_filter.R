@@ -1,3 +1,4 @@
+library("FKF")
 
 # define the state equation
 state_update = function(x_k, phi=0.95, mu=0.9, sigma_2= 0.5){
