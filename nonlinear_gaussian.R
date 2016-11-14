@@ -73,7 +73,56 @@ PIMH_nonlinear = PIMH(n_iter,
                    observed_process=observed_process_nlinear)
 
 
-plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], 
+plot_nonlinear=trace_plot(PIMH_nonlinear$state_values[1,], 
                 n_iter, 
                 title = "Trajectory for the firt particle")
 plot_nonlinear
+
+
+##################################################################
+# SMC-MCMC for a linear gaussian model - acceptence rate w/ N
+# This is slow to run!
+##################################################################
+source("PIMH.R")
+source("propagate_SSM.R")
+
+vector_particle_numbers = c(1, 10, 25, 50, 100, 500, 1000, 2000) #the values of N to loop over
+vector_times = c(10,25,50,100)
+acceptance_ratios = c()
+acceptance_rate_df = data.frame(t=integer(0), N=integer(0), acceptance_rate=numeric(0))
+
+t_i = 0
+
+for (t in vector_times){
+  i = 0
+  for (N in vector_particle_numbers){
+    cat("")
+    i = i + 1
+    t_i = t_i + 1
+    
+    n_iter = 1000 # 50,000 iterations were used in the paper
+    
+    data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t, plot=FALSE)
+    observed_process_nlinear = data$observed_process
+
+    PIMH_nonlinear = PIMH(n_iter, 
+                          N, 
+                          calculate_weight=calculate_weight_nlinear,  
+                          state_update=nlinear_state_update, 
+                          observed_process=observed_process_nlinear)
+
+    acceptance_rate_df[t_i, ] <- c(t, N, PIMH_nonlinear$acceptance_ratio)
+  }
+}
+
+acceptance_rate_df$T = as.factor(acceptance_rate_df$t)
+
+acceptance_plot = ggplot(acceptance_rate_df, aes(x = N, y = acceptance_rate, group = T, color=T)) + 
+  geom_point(aes(shape=T), size=2) + geom_line()
+
+data_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , Sys.time(), '.rdata', sep='')
+save(acceptance_rate_df, file = data_path)
+
+plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , Sys.time(), '.pdf', sep='')
+ggsave(path, acceptance_plot)
+
