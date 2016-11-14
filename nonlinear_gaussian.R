@@ -39,7 +39,7 @@ calculate_weight_nlinear = function(observed_val, particles_vals){
 
 t = 50      # number of time steps for the data generation
 
-data=generate_data(nlinear_state_update,nlinear_obs_update, prior_par, t, plot=TRUE)
+data=generate_data(nlinear_state_update,nlinear_obs_update, prior_par, t, par = NULL, plot=TRUE)
 latent_process_nlinear = data$latent_process
 observed_process_nlinear = data$observed_process
 data$plot
@@ -73,7 +73,7 @@ PIMH_nonlinear = PIMH(n_iter,
                    observed_process=observed_process_nlinear)
 
 
-plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], 
+plot_nonlinear = tracePlot(PIMH_nonlinear$state_values[1,], 
                 n_iter, 
                 title = "Trajectory for the firt particle")
 plot_nonlinear

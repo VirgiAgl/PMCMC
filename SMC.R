@@ -1,6 +1,6 @@
 source("plotting_functions.R")
 
-SMC = function(N, calculate_weight, state_update, observed_process){
+SMC = function(N, calculate_weight, state_update, observed_process, theta_state, theta_obs){
   # Function to perform SMC for a state space model. 
   # N is desired number of particles
   # calculate_weight is a function to calculate the weight at each timestep
@@ -19,14 +19,15 @@ SMC = function(N, calculate_weight, state_update, observed_process){
   logl = 0                                           # Initialize variable to store likelihood values
   
   for (i in 1:t){
+    cat("iteration in the SMC is +", i, "\n")
     if (i >= 2) { # All steps other than 1st
-      particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update, k=i)#phi=phi, mu=mu, sigma=sigma)
+      particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update, k=i, theta_state)#phi=phi, mu=mu, sigma=sigma)
     }
     
-    weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,])
+    weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,], theta_obs)
     
     logl=logl+log(mean(weight)) #log of the estimate of the likelihood
-    lik_in_time[i]=exp(logl)   #store the likelihood value
+    lik_in_time[i]=logl   #store the likelihood value
     
     weight_norm = weight/sum(weight)  #normalize the weights
     weights_in_time[i,] = weight_norm #store the weights

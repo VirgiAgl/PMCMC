@@ -21,21 +21,25 @@ source("propagate_SSM.R")
 
 # Problem specific functions 
 
-linear_state_update = function(x_k, k){
+linear_state_update = function(x_k, k, theta_state){
+  mu = theta_state[1] 
+  phi = theta_state[2] 
+  sigma = theta_state[3] 
   error_value = rnorm(1, mean=0, sd=1)
   x_k1 = mu + phi*(x_k-mu) + sigma*error_value
   return (x_k1)  
 }
 
-linear_obs_update = function (x_k){
+linear_obs_update = function (x_k, theta_obs){
+  eta = theta_obs[1]  
   error_value = rnorm(1, mean=0, sd=1)
   y_k = x_k + eta*error_value
   return (y_k)
 }
 
-calculate_weight_linear = function(observed_val, particles_vals){
+calculate_weight_linear = function(observed_val, particles_vals, theta_obs){
   # This weight calculation is SSM dependant
-  weight  = dnorm(observed_val, mean = particles_vals, sd=eta) # weights here are from prob density g evaulated at y1|x_1 for all steps
+  weight  = dnorm(observed_val, mean = particles_vals, sd=theta_obs[1]) # weights here are from prob density g evaulated at y1|x_1 for all steps
 }
 
 
@@ -43,9 +47,9 @@ calculate_weight_linear = function(observed_val, particles_vals){
 # Data generation
 ##################################################################
 
-t = 100 # num of iters
+t = 100 # num of iters in time
 
-data=generate_data(linear_state_update,linear_obs_update, prior_par, t, plot=TRUE)
+data=generate_data(linear_state_update,linear_obs_update, prior_par, t, plot=TRUE, theta_state = c(mu, phi, sigma), theta_obs = c(eta))
 latent_process_linear = data$latent_process
 observed_process_linear = data$observed_process
 data$plot
@@ -58,7 +62,7 @@ source("SMC.R")
 N = 100  #number of particles 
 
 #run the SMC for the state space model
-smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear)
+smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
 
 # save result for the representation of the Kalman filter
 particles_in_time = smc_output$particles_in_time
@@ -126,7 +130,7 @@ plot
 
 
 ##################################################################
-# SMC-MCMC for a linear gaussian model
+# PIMH for a linear gaussian model
 ##################################################################
 source("PIMH.R")
 
@@ -136,10 +140,35 @@ PIMH_linear = PIMH(n_iter,
                    N, 
                    calculate_weight=calculate_weight_linear,  
                    state_update=linear_state_update, 
-                   observed_process=observed_process_linear)
+                   observed_process=observed_process_linear,
+                   theta_state = c(mu, phi,sigma),
+                   theta_obs = c(eta))
 
 plot_linear=tracePlot(PIMH_linear$state_values[1,], 
                 n_iter, 
                 title = "Markov Chain for the first particle")
 plot_linear
+
+
+##################################################################
+# PMMH for a linear gaussian model
+##################################################################
+source("PMMH_general.R")
+
+d = 1      #update only phi
+
+PMMH_linear = PMMH(n_iter, 
+                   N, 
+                   d,
+                   calculate_weight=calculate_weight_linear,  
+                   state_update=linear_state_update, 
+                   observed_process=observed_process_linear,
+                   theta_state = c(mu, phi, sigma),
+                   theta_obs = c(eta) )
+
+plot_linear=tracePlot(PIMH_linear$state_values[1,], 
+                      n_iter, 
+                      title = "Markov Chain for the first particle")
+plot_linear
+
 
