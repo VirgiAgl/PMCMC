@@ -75,5 +75,5 @@ PIMH_nonlinear = PIMH(n_iter,
 
 plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], 
                 n_iter, 
-                title = "Markov Chain for the first particle")
+                title = "Trajectory for the firt particle")
 plot_nonlinear
