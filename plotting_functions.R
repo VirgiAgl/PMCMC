@@ -11,8 +11,9 @@ plot_processes_in_time = function(process_dataframe){
   # headings in process dataframe
   process_dataframe$time = 1:nrow(process_dataframe)
   melted_data_df = melt(process_dataframe, id.vars='time')
-  ggplot(melted_data_df, aes(x=time, y = value, group = variable, colour = variable)) +   geom_line()
-}
+  plot = ggplot(melted_data_df, aes(x=time, y = value, group = variable, colour = variable)) +   geom_line()
+  return(plot)
+  }
 
 plot_particles_and_latent_process = function(particles_in_time, latent_process){
   data_df = data.frame(p=particles_in_time)
