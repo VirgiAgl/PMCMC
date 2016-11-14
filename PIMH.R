@@ -29,7 +29,9 @@ PIMH = function(n_iter,
   
   
   for (i in 1:n_iter){
-    print(i)
+    if (i %% 1000== 0){
+      cat("Step ", i, " of ", n_iter, '\n') 
+    }
     # run an SMC for each iteration from 1 to n_iter
     smc_output = SMC(N=N, 
                       calculate_weight=calculate_weight, 
