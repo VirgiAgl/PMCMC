@@ -26,7 +26,7 @@ SMC = function(N, calculate_weight, state_update, observed_process){
     weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,])
     
     logl=logl+log(mean(weight)) #log of the estimate of the likelihood
-    lik_in_time[i]=logl    #store the likelihood value
+    lik_in_time[i]=exp(logl)   #store the likelihood value
     
     weight_norm = weight/sum(weight)  #normalize the weights
     weights_in_time[i,] = weight_norm #store the weights
