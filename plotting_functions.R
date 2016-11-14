@@ -32,7 +32,7 @@ plot_particles_and_latent_process = function(particles_in_time, latent_process){
 
 
 tracePlot = function(X, n_iter, title){
-    plot = qplot(seq(from= 1, to=n_iter+1, by=1), X ,geom="point", main="",
+    plot = qplot(seq(from= 1, to=n_iter+1, by=1), X ,geom="line", main="",
     xlab="Iteration index", ylab=title, xlim=c(0,n_iter+1), alpha = I(1/1000), size=I(2.5)) +
     theme(axis.title.x = element_text(size = 12), title = element_text(colour='black'),
     axis.text.x=element_text(colour="black"), axis.text.y=element_text(colour="black"),

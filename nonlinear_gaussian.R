@@ -52,9 +52,28 @@ source("SMC.R")
 
 N = 100  #number of particles 
 
-#run the SMC for the state space model
+#run the SMC for the non linear gaussian state space model
 smc_output = SMC(N=N, calculate_weight=calculate_weight_nlinear, state_update=nlinear_state_update, observed_process=observed_process_nlinear)
-nlinear_particles_in_time = smc_output$particles_in_time
 
 # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
-plot_particles_and_latent_process(nlinear_particles_in_time, latent_process_nlinear)
+plot_particles_and_latent_process(smc_output$particles_in_time, latent_process_nlinear)
+
+
+##################################################################
+# SMC-MCMC for a linear gaussian model
+##################################################################
+source("PIMH.R")
+
+n_iter = 1000
+
+PIMH_nonlinear = PIMH(n_iter, 
+                   N, 
+                   calculate_weight=calculate_weight_nlinear,  
+                   state_update=nlinear_state_update, 
+                   observed_process=observed_process_nlinear)
+
+
+plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], 
+                n_iter, 
+                title = "Markov Chain for the first particle")
+plot_nonlinear
