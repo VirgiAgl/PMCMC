@@ -9,7 +9,7 @@ PIMH = function(n_iter,
   #initialisation
   t=length(observed_process)     #number of observed step in times
   n_acceptance=0
-  state_values = matrix(NA, nrow = N, ncol = n_iter+1 ) #store the state values at each step
+  state_values = matrix(NA, nrow = t, ncol = n_iter+1 ) #store the state values at each step
   lik_values = vector(length = n_iter+1 )               #store the lik value at each step
   
   # run an SMC for iteration 0
@@ -29,7 +29,6 @@ PIMH = function(n_iter,
   
   
   for (i in 1:n_iter){
-    print(i)
     # run an SMC for each iteration from 1 to n_iter
     smc_output = SMC(N=N, 
                       calculate_weight=calculate_weight, 
