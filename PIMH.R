@@ -21,7 +21,7 @@ PIMH = function(n_iter,
   
   index = sample(1:N, 1, prob = smc_output$weights_in_time[t, ]) #to check
   proposed_x = smc_output$particles_in_time[,index]
-  proposed_lik = smc_output$lik_in_time[index]
+  proposed_lik = smc_output$lik_in_time[t]
   
   # store the first two values
   lik_values[1]=proposed_lik
@@ -40,12 +40,10 @@ PIMH = function(n_iter,
     # sample the path x1:xT to consider
     index = sample(1:N, 1, prob = smc_output$weights_in_time[t, ])
     proposed_x = smc_output$particles_in_time[,index]
-    proposed_lik = smc_output$lik_in_time[index]
-    print(proposed_lik)
+    proposed_lik = smc_output$lik_in_time[t]
     
     # compute the accepatance probability
     acc_prob = min(c(1, proposed_lik/(lik_values[i]) ))
-    print(acc_prob)
     
     # accept or reject the new value
     if(runif(1) < acc_prob){
