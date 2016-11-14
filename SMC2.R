@@ -13,7 +13,7 @@ SMC2 = function(N, calculate_weight, state_update, observed_process){
   lik_in_time = rep(NA, t)                           # Log likelihood value at each t timestep 
   weights_in_time = matrix(NA, ncol=N, nrow= t)      # N weights at t timesteps
   particles_in_time[1,] = rnorm(N, mean=0, sd=1)     # Initialise with proposal density
-  logl = 0                                           #initialize variable to store likelihood values
+  logl = 0                                           # Initialize variable to store likelihood values
   
   for (i in 1:t){
     if (i >= 2) { # All steps other than 1st

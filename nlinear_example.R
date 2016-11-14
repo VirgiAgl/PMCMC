@@ -6,11 +6,11 @@
 ##################################################################
 
 
-t = 100 # num of iters
+t = 50 # num of iters
 
 # SSM params
-sigma2_V <- 1
-sigma2_W <- 1
+sigma2_V <- 10
+sigma2_W <- 10
 
 
 nlinear_state_update = function(x_k, k){

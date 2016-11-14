@@ -68,6 +68,7 @@ plot_particles_and_latent_process(particles_in_time, latent_process_toy)
 ##################################################################
 # Kalman filter for predictive distribution
 ##################################################################
+library(FKF)
 
 toy_model_state_space <- function(phi, mu, sigma, y_values, x_values) {
   Tt = matrix(phi)

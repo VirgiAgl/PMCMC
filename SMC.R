@@ -20,19 +20,27 @@ SMC = function(N, calculate_weight, state_update, observed_process){
     weight_norm = weight/sum(weight)
     weights_in_time[i,] = weight_norm
     
-    ESS = sum((weights_in_time[i,])^2)^-1 
-    if (ESS<N/2){
-      #only resample if weights are very variable such that ESS is small
+    #ESS = sum((weights_in_time[i,])^2)^-1 
+    #if (ESS<N/2){
+    #  #only resample if weights are very variable such that ESS is small
+    #  resample_index = sample(1:N, replace=TRUE, prob=weights_in_time[i,])
+    #  particles_in_time[,1:N] = particles_in_time[,resample_index]
+    #  resample_count = resample_count + 1
+    #}
+    
+    if (i < t) {
       resample_index = sample(1:N, replace=TRUE, prob=weights_in_time[i,])
       particles_in_time[,1:N] = particles_in_time[,resample_index]
       resample_count = resample_count + 1
+      particle_mean_in_time[i] = sum(particles_in_time[i,])/N
+    }else {
+      particle_mean_in_time[i] = sum(particles_in_time[i,]*weights_in_time[i,])
+      final_weights = weights_in_time[i,]
     }
-    
-    particle_mean_in_time[i] = sum(particles_in_time[i,])/N
   }
   
-  cat(100.0*(resample_count / t), "% of timesteps we resample")
+  #cat(100.0*(resample_count / t), "% of timesteps we resample")
   
-  out = list(particles_in_time=particles_in_time, particle_mean_in_time=particle_mean_in_time)
+  out = list(particles_in_time=particles_in_time, particle_mean_in_time=particle_mean_in_time, final_weights = final_weights)
   return(out)
 }

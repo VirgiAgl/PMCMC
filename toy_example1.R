@@ -61,6 +61,9 @@ N = 100  #number of particles
 smc_output = SMC(N=N, calculate_weight=calculate_weight_toy, state_update=toy_state_update, observed_process=observed_process_toy)
 particles_in_time = smc_output$particles_in_time
 particle_mean_in_time = smc_output$particle_mean_in_time
+final_weights = smc_output$final_weights
+particle_index = sample(1:N, size = 1, prob = final_weights)
+sample_particle = particles_in_time[, particle_index]
 
 # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
 plot_particles_and_latent_process(particles_in_time, latent_process_toy)
