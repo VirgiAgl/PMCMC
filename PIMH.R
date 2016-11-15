@@ -8,9 +8,8 @@ PIMH = function(n_iter,
                 observed_process,
                 theta_state, 
                 theta_obs){
-  
-
   t=length(observed_process)                            #number of observed step in times
+
   n_acceptance=0
   state_values = matrix(NA, nrow = t, ncol = n_iter+1 ) #store the state values at each step
   lik_values = vector(length = n_iter+1 )               #store the lik value at each step

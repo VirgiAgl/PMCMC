@@ -2,7 +2,8 @@ source("plotting_functions.R")
 source("SMC.R")
 
 set.seed(27)
-PMMH_linear = function(n_iter, 
+
+PMMH = function(n_iter, 
                 N, 
                 d,              # dimension of the unknown parameter space
                 calculate_weight, 

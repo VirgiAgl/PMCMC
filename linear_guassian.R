@@ -153,6 +153,7 @@ plot_linear
 ##################################################################
 # PMMH for a linear gaussian model
 ##################################################################
+
 # source("PMMH_general.R")
 # 
 # d = 1      #update only phi
@@ -181,3 +182,22 @@ plot_linear
 # plot_linear
 # 
 # 
+
+source("PMMH_general.R")
+
+d = 1      #update only phi
+
+PMMH_linear = PMMH(n_iter, 
+                   N, 
+                   d,
+                   calculate_weight=calculate_weight_linear,  
+                   state_update=linear_state_update, 
+                   observed_process=observed_process_linear,
+                   theta_state = c(mu, phi, sigma),
+                   theta_obs = c(eta) )
+
+plot_linear=tracePlot(PIMH_linear$state_values[1,], 
+                      n_iter, 
+                      title = "Markov Chain for the first particle")
+plot_linear
+

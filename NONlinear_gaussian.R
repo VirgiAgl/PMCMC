@@ -22,6 +22,7 @@ nlinear_state_update = function(x_k, k, theta_state){
   return (x_k1)  
 }
 
+
 nlinear_obs_update = function (x_k, theta_obs){
   theta_obs = c(sigma2_W)
   error = rnorm(1, mean=0, sd=sqrt(sigma2_W))
@@ -32,6 +33,7 @@ nlinear_obs_update = function (x_k, theta_obs){
 calculate_weight_nlinear = function(observed_val, particles_vals, theta_obs){
   # This weight calculation is SSM dependant
   weight  = dnorm(observed_val, mean = particles_vals^2 / 20, sd=sqrt(theta_obs)) # weights here are from prob density g evaulated at y1|x_1 for all steps
+>>>>>>> 667f19c93fdaa4306fd1eff64a5a4f4cc450c72a
 }
 
 
@@ -41,7 +43,7 @@ calculate_weight_nlinear = function(observed_val, particles_vals, theta_obs){
 
 t = 50      # number of time steps for the data generation
 
-data=generate_data(nlinear_state_update,nlinear_obs_update, prior_par, t, plot=TRUE)
+data=generate_data(nlinear_state_update,nlinear_obs_update, prior_par, t, plot=TRUE, theta_state, theta_obs)
 latent_process_nlinear = data$latent_process
 observed_process_nlinear = data$observed_process
 data$plot
@@ -68,6 +70,7 @@ source("PIMH.R")
 
 n_iter = 100
 
+
 PIMH_nonlinear = PIMH(n_iter, 
                       N, 
                       calculate_weight=calculate_weight_nlinear,  
@@ -77,11 +80,11 @@ PIMH_nonlinear = PIMH(n_iter,
                       theta_obs = c(sigma2_W))
 
 
-plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], 
-                          n_iter, 
-                          title = "Trajectory for the firt particle")
-plot_nonlinear
+plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], observed_process=observed_process_nlinear)
 
+
+plot_nonlinear=trace_plot(PIMH_nonlinear$state_values[1,], n_iter, title = "Trajectory for the firt particle")
+plot_nonlinear
 
 
 ##################################################################
@@ -104,6 +107,7 @@ plot_nonlinear
 # 
 
 
+
 ##################################################################
 # SMC-MCMC for a linear gaussian model - acceptence rate w/ N
 # This is slow to run!
@@ -116,6 +120,9 @@ vector_times = c(10,25,50,100)
 acceptance_ratios = c()
 acceptance_rate_df = data.frame(t=integer(0), N=integer(0), acceptance_rate=numeric(0))
 
+data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t=100, plot=FALSE, theta_state, theta_obs)
+observed_process_nlinear = data$observed_process
+
 t_i = 0
 
 for (t in vector_times){
@@ -124,17 +131,16 @@ for (t in vector_times){
     cat("")
     i = i + 1
     t_i = t_i + 1
-    
+
     n_iter = 1000 # 50,000 iterations were used in the paper
-    
-    data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t, plot=FALSE)
-    observed_process_nlinear = data$observed_process
     
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 
                           calculate_weight=calculate_weight_nlinear,  
                           state_update=nlinear_state_update, 
-                          observed_process=observed_process_nlinear)
+                          observed_process=observed_process_nlinear,
+                          theta_state = c(sigma2_V),
+                          theta_obs = c(sigma2_W))
     
     acceptance_rate_df[t_i, ] <- c(t, N, PIMH_nonlinear$acceptance_ratio)
   }
@@ -149,4 +155,5 @@ data_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter
 save(acceptance_rate_df, file = data_path)
 
 plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , Sys.time(), '.pdf', sep='')
-ggsave(path, acceptance_plot)
+
+ggsave(plot_path, acceptance_plot)
