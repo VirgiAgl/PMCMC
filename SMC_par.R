@@ -16,7 +16,7 @@ eta_2 = 0.02
 par[4] = sqrt(eta_2)  #eta
 
 
-SMCpar=function(N,y,prior,par,h=0,LW=F,PLOT=T) { 
+SMCpar=function(N,y,prior,par,h=0,LW=F) { 
   n=length(y)  # number of observations 
   #d=2         # dimension of the state space -- STATE=(X_t,logit(phi)) 
   par_dim=1
