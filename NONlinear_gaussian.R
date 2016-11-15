@@ -60,22 +60,22 @@ plot_particles_and_latent_process(smc_output$particles_in_time, latent_process_n
 
 
 ##################################################################
-# SMC-MCMC for a linear gaussian model
+# PIMH for a non linear gaussian model
 ##################################################################
 source("PIMH.R")
 
 n_iter = 1000
 
 PIMH_nonlinear = PIMH(n_iter, 
-                   N, 
-                   calculate_weight=calculate_weight_nlinear,  
-                   state_update=nlinear_state_update, 
-                   observed_process=observed_process_nlinear)
+                      N, 
+                      calculate_weight=calculate_weight_nlinear,  
+                      state_update=nlinear_state_update, 
+                      observed_process=observed_process_nlinear)
 
 
 plot_nonlinear=trace_plot(PIMH_nonlinear$state_values[1,], 
-                n_iter, 
-                title = "Trajectory for the firt particle")
+                          n_iter, 
+                          title = "Trajectory for the firt particle")
 plot_nonlinear
 
 
@@ -104,13 +104,13 @@ for (t in vector_times){
     
     data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t, plot=FALSE)
     observed_process_nlinear = data$observed_process
-
+    
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 
                           calculate_weight=calculate_weight_nlinear,  
                           state_update=nlinear_state_update, 
                           observed_process=observed_process_nlinear)
-
+    
     acceptance_rate_df[t_i, ] <- c(t, N, PIMH_nonlinear$acceptance_ratio)
   }
 }
@@ -125,4 +125,3 @@ save(acceptance_rate_df, file = data_path)
 
 plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , Sys.time(), '.pdf', sep='')
 ggsave(plot_path, acceptance_plot)
-
