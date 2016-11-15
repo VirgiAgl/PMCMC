@@ -48,4 +48,4 @@ SMC = function(N, calculate_weight, state_update, observed_process, theta_state,
   out = list(particles_in_time=particles_in_time, particle_mean_in_time=particle_mean_in_time, particle_variance_in_time=particle_variance_in_time, weights_in_time=weights_in_time, lik_in_time=lik_in_time)
   return(out)
  }  
-}  
+
