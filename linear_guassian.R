@@ -208,11 +208,89 @@ source("PMMH_general.R")
                     theta_state = c(mu, phi, sigma),
                     theta_obs = c(eta) )
 
-# plot_linear=tracePlot(PIMH_linear$state_values[1,],
-#                       n_iter,
-#                       title = "Markov Chain for the first particle")
-# plot_linear
-#
-#
 
+ 
+ 
+ ##################################################################
+ # Produce plot of SMC in time
+ ##################################################################
+ source("SMC.R")
+ 
+ N = 100  #number of particles 
+ 
+ # t=2
+ observed_process_linear_t2=observed_process_linear[1:2]
+ 
+ #run the SMC for the state space model
+ smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+ 
+ # save result for the representation of the Kalman filter
+ particles_in_time = smc_output$particles_in_time
+ particle_mean_in_time = smc_output$particle_mean_in_time
+ 
+ # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+ plot_particles_and_latent_process(particles_in_time, latent_process_linear)
+ ggsave("smc_linear_t2.pdf")
 
+ par(mfrow = c(3, 2))
+ 
+ # t=4
+ observed_process_linear_t2=observed_process_linear[1:4]
+  #run the SMC for the state space model
+ smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+  # save result for the representation of the Kalman filter
+ particles_in_time = smc_output$particles_in_time
+ particle_mean_in_time = smc_output$particle_mean_in_time
+  # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+ plot_particles_and_latent_process(particles_in_time, latent_process_linear)
+ ggsave("smc_linear_t4.pdf")
+ 
+ # t=8
+ observed_process_linear_t2=observed_process_linear[1:8]
+ #run the SMC for the state space model
+ smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+ # save result for the representation of the Kalman filter
+ particles_in_time = smc_output$particles_in_time
+ particle_mean_in_time = smc_output$particle_mean_in_time
+ # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+ plot_particles_and_latent_process(particles_in_time, latent_process_linear)
+ ggsave("smc_linear_t8.pdf")
+ 
+ 
+ # t=20
+ observed_process_linear_t2=observed_process_linear[1:20]
+ #run the SMC for the state space model
+ smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+ # save result for the representation of the Kalman filter
+ particles_in_time = smc_output$particles_in_time
+ particle_mean_in_time = smc_output$particle_mean_in_time
+ # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+ plot_particles_and_latent_process(particles_in_time, latent_process_linear)
+ ggsave("smc_linear_t20.pdf")
+ 
+ 
+ # t=40
+ observed_process_linear_t2=observed_process_linear[1:40]
+ #run the SMC for the state space model
+ smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+ # save result for the representation of the Kalman filter
+ particles_in_time = smc_output$particles_in_time
+ particle_mean_in_time = smc_output$particle_mean_in_time
+ # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+ plot_particles_and_latent_process(particles_in_time, latent_process_linear)
+ ggsave("smc_linear_t40.pdf")
+ 
+ 
+ # t=80
+ observed_process_linear_t2=observed_process_linear[1:80]
+ #run the SMC for the state space model
+ smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+ # save result for the representation of the Kalman filter
+ particles_in_time = smc_output$particles_in_time
+ particle_mean_in_time = smc_output$particle_mean_in_time
+ # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+ plot_particles_and_latent_process(particles_in_time, latent_process_linear)
+ ggsave("smc_linear_t80.pdf")
+ 
+
+ 
