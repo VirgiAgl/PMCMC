@@ -55,7 +55,7 @@ PMMH_linear= function(n_iter,
     smc_output = SMC(N=N, 
                      calculate_weight=calculate_weight, 
                      state_update=state_update, 
-                     observed_process=observed_process_linear, 
+                     observed_process=observed_process, 
                      theta_state,
                      theta_obs)
     
