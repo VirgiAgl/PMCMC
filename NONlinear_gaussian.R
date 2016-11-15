@@ -33,7 +33,6 @@ nlinear_obs_update = function (x_k, theta_obs){
 calculate_weight_nlinear = function(observed_val, particles_vals, theta_obs){
   # This weight calculation is SSM dependant
   weight  = dnorm(observed_val, mean = particles_vals^2 / 20, sd=sqrt(theta_obs)) # weights here are from prob density g evaulated at y1|x_1 for all steps
->>>>>>> 667f19c93fdaa4306fd1eff64a5a4f4cc450c72a
 }
 
 
@@ -132,7 +131,7 @@ for (t in vector_times){
     i = i + 1
     t_i = t_i + 1
 
-    n_iter = 1000 # 50,000 iterations were used in the paper
+    n_iter = 10 # 50,000 iterations were used in the paper
     
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 
