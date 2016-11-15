@@ -3,7 +3,7 @@ source("SMC.R")
 
 set.seed(27)
 
-PMMH = function(n_iter, 
+PMMH_linear= function(n_iter, 
                 N, 
                 d,              # dimension of the unknown parameter space
                 calculate_weight, 
@@ -95,6 +95,8 @@ PMMH = function(n_iter,
   return(out)
   
 }
+
+
 
 set.seed(27)
 PMMH_nonlinear = function(n_iter, 
