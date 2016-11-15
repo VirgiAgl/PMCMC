@@ -91,6 +91,9 @@ vector_times = c(10,25,50,100)
 acceptance_ratios = c()
 acceptance_rate_df = data.frame(t=integer(0), N=integer(0), acceptance_rate=numeric(0))
 
+data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t=100, plot=FALSE)
+observed_process_nlinear = data$observed_process
+
 t_i = 0
 
 for (t in vector_times){
@@ -101,9 +104,6 @@ for (t in vector_times){
     t_i = t_i + 1
     
     n_iter = 10 # 50,000 iterations were used in the paper
-    
-    data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t, plot=FALSE)
-    observed_process_nlinear = data$observed_process
     
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 
