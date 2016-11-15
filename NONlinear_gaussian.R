@@ -5,7 +5,6 @@
 ##################################################################
 # Model specification
 ##################################################################
-
 # SSM params
 sigma2_V <- 10
 sigma2_W <- 10
@@ -62,6 +61,9 @@ smc_output = SMC(N=N, calculate_weight=calculate_weight_nlinear, state_update=nl
 # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
 plot_particles_and_latent_process(smc_output$particles_in_time, latent_process_nlinear)
 
+# save plot
+#plot_path = paste('plots/nonlinear_SMC_particles_in_time', '_N_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
+#ggsave(plot_path)
 
 ##################################################################
 # PIMH for a non linear gaussian model
@@ -116,7 +118,7 @@ source("PIMH.R")
 source("propagate_SSM.R")
 
 sigma2_V <- 10
-sigma2_W <- 10
+sigma2_W <- 10 #1 or 10
 theta_obs = c(sigma2_W)
 theta_state = c(sigma2_V)
 
@@ -130,11 +132,11 @@ observed_process_nlinear = data$observed_process
 data$plot
 
 # save data for plot
-data_path = paste('plots/nonlinear_guassian_ssm', format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
+data_path = paste('plots/nonlinear_guassian_ssm_sigma2_W_', sigma2_W,  format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
 save(data, file = data_path)
 
 # save plot
-plot_path = paste('plots/nonlinear_guassian_ssm', format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
+plot_path = paste('plots/nonlinear_guassian_ssm_sigma2_W_', sigma2_W,  format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
 ggsave(plot_path, plot = last_plot())
 
 t_i = 0
@@ -146,7 +148,7 @@ for (t in vector_times){
     i = i + 1
     t_i = t_i + 1
 
-    n_iter = 1000 # 50,000 iterations were used in the paper, 1000 takes on the order of one hour
+    n_iter = 10000 # 50,000 iterations were used in the paper, 1000 takes on the order of one hour
     
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 
@@ -166,9 +168,9 @@ acceptance_plot = ggplot(acceptance_rate_df, aes(x = N, y = acceptance_rate, gro
   geom_point(aes(shape=T), size=2) + geom_line()
 
 # save data for plot
-data_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
+data_path = paste('plots/nonlinear_guassian_acceptance_rate__sigma2_W_', sigma2_W, '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
 save(acceptance_rate_df, file = data_path)
 
 # save plot
-plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
+plot_path = paste('plots/nonlinear_guassian_acceptance_rate__sigma2_W_', sigma2_W , '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
 ggsave(plot_path, acceptance_plot)

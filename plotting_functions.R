@@ -29,7 +29,7 @@ plot_particles_and_latent_process = function(particles_in_time, latent_process){
   head(df)
   ggplot(df, aes(x=time, y = value, group = variable, colour = variable, alpha=0.8)) +   
     scale_linetype_manual(values = c("dashed", "solid")) +
-    geom_line(aes(linetype=type)) +
+    geom_line(aes(linetype=type, alpha=0.2)) +
     guides(colour=FALSE, alpha=FALSE)
 }
 
