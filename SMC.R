@@ -19,7 +19,6 @@ SMC = function(N, calculate_weight, state_update, observed_process, theta_state,
   logl = 0                                           # Initialize variable to store likelihood values
   
   for (i in 1:t){
-    cat("iteration in the SMC is +", i, "\n")
     if (i >= 2) { # All steps other than 1st
       particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update, k=i, theta_state)#phi=phi, mu=mu, sigma=sigma)
     }

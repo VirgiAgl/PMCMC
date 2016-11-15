@@ -125,8 +125,17 @@ vector_times = c(10,25,50,100) #the times we want to calculate acceptance averag
 acceptance_rate_df = data.frame(t=integer(0), N=integer(0), acceptance_rate=numeric(0)) #to store the data to plot
 
 #generate one set of data; subset for different ts later. t here must be biggest we want to compare
-data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t=100, plot=FALSE, theta_state, theta_obs)
+data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t=100, plot=TRUE, theta_state, theta_obs)
 observed_process_nlinear = data$observed_process
+data$plot
+
+# save data for plot
+data_path = paste('plots/nonlinear_guassian_ssm', format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
+save(data, file = data_path)
+
+# save plot
+plot_path = paste('plots/nonlinear_guassian_ssm', format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
+ggsave(plot_path, plot = last_plot())
 
 t_i = 0
 for (t in vector_times){
@@ -157,9 +166,9 @@ acceptance_plot = ggplot(acceptance_rate_df, aes(x = N, y = acceptance_rate, gro
   geom_point(aes(shape=T), size=2) + geom_line()
 
 # save data for plot
-data_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%I_%p"), '.rdata', sep='')
+data_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
 save(acceptance_rate_df, file = data_path)
 
 # save plot
-plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%I_%p"), '.pdf', sep='')
+plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.pdf', sep='')
 ggsave(plot_path, acceptance_plot)
