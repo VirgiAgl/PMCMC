@@ -116,16 +116,46 @@ particle_means_df$variable = colnames(data_frame)[1:21]
 data_frame_melt$variable = factor(data_frame_melt$variable, levels=c('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16','V17','V18','V19','V20','V21'))
 particle_means_df$variable = factor(particle_means_df$variable, levels = c('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14','V15','V16','V17','V18','V19','V20','V21'))
 
-# Plot the sequence of predictive distributions
-plot = ggplot() +  
+
+# Plot the sequence of predictive distributions WITHOUT RED DOTS
+plot1 = ggplot() +  
   geom_point(data=data_frame_melt, aes(x=value, y = x_values, group = variable, colour = "black"), size=0.05, colour="#000099") + 
-  geom_point(data = particle_means_df, aes(x=1, y = means, colour = "red", group = variable), size=3, alpha=0.6) +
-  ggtitle("Predictive densities") +
+  ggtitle("Predictives densities") +
   labs(x="Time index",y="State values") + 
   xlim(0,1.5) +
+  ylim(c(-0.5,3)) +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
   facet_wrap(~variable, ncol = n_values[1] ) +
-  theme(strip.background = element_blank(), strip.text.x = element_blank())
-plot
+  theme(strip.background = element_blank(), 
+        strip.text.x = element_blank(),
+        axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank(), 
+        axis.text=element_text(size=12), 
+        axis.title=element_text(size=12), 
+        plot.title = element_text(lineheight=.8, face="bold"))
+plot1
+
+
+
+
+# Plot the sequence of predictive distributions with RED DOTS
+plot2 = ggplot() +  
+  geom_point(data=data_frame_melt, aes(x=value, y = x_values, group = variable, colour = "black"), size=0.05, colour="#000099") + 
+  geom_point(data = particle_means_df, aes(x=1, y = means, colour = "red", group = variable), size=3, alpha=0.6) +
+  ggtitle("Predictives densities") +
+  labs(x="Time index",y="State values") + 
+  xlim(0,1.5) +
+  ylim(c(-0.5,3)) +
+  theme(legend.position="none", plot.title = element_text(hjust = 0.5)) +
+  facet_wrap(~variable, ncol = n_values[1] ) +
+  theme(strip.background = element_blank(), 
+        strip.text.x = element_blank(),
+        axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank(), 
+        axis.text=element_text(size=10), 
+        axis.title=element_text(size=10), 
+        plot.title = element_text(lineheight=.5, face="bold"))
+plot2
 
 
 
