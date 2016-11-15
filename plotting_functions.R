@@ -12,6 +12,7 @@ plot_processes_in_time = function(process_dataframe){
   process_dataframe$time = 1:nrow(process_dataframe)
   melted_data_df = melt(process_dataframe, id.vars='time')
   plot = ggplot(melted_data_df, aes(x=time, y = value, group = variable, colour = variable)) +   geom_line()
+  
   return(plot)
   }
 
@@ -26,7 +27,10 @@ plot_particles_and_latent_process = function(particles_in_time, latent_process){
   melted_latent_df$type = 'latent process'
   df = rbind(melted_data_df, melted_latent_df)
   head(df)
-  ggplot(df, aes(x=time, y = value, group = variable, colour = variable, linetype=type, alpha=0.8)) +   geom_line() +guides(colour=FALSE, alpha=FALSE)
+  ggplot(df, aes(x=time, y = value, group = variable, colour = variable, alpha=0.8)) +   
+    scale_linetype_manual(values = c("dashed", "solid")) +
+    geom_line(aes(linetype=type)) +
+    guides(colour=FALSE, alpha=FALSE)
 }
 
 
