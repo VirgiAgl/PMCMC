@@ -100,7 +100,7 @@ for (t in vector_times){
     i = i + 1
     t_i = t_i + 1
     
-    n_iter = 1000 # 50,000 iterations were used in the paper
+    n_iter = 10 # 50,000 iterations were used in the paper
     
     data=generate_data(nlinear_state_update, nlinear_obs_update, prior_par, t, plot=FALSE)
     observed_process_nlinear = data$observed_process
@@ -124,5 +124,5 @@ data_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter
 save(acceptance_rate_df, file = data_path)
 
 plot_path = paste('plots/nonlinear_guassian_acceptance_rate', '_n_iter_', n_iter, '_' , Sys.time(), '.pdf', sep='')
-ggsave(path, acceptance_plot)
+ggsave(plot_path, acceptance_plot)
 
