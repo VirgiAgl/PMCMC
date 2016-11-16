@@ -176,7 +176,7 @@ PIMH_linear = PIMH(n_iter,
                    theta_state = c(mu, phi,sigma),
                    theta_obs = c(eta))
 
-plot_linear=tracePlot(PIMH_linear$state_values[1,], 
+plot_linear=trace_plot(PIMH_linear$state_values[1,], 
                 n_iter, 
                 title = "Markov Chain for the first particle")
 plot_linear
