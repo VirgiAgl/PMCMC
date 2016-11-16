@@ -37,7 +37,7 @@ calculate_weight_nlinear = function(observed_val, particles_vals, theta_obs){
 
 calculate_weight_nlinear_LOG = function(observed_val, particles_vals, theta_obs){
   # This weight calculation is SSM dependant
-  weight  = (-(observed_val-particles_vals)^2)/(2*theta_obs[1])-log(sqrt(2*theta_obs[1]*pi)) # LOG weights here are from prob density g evaulated at y1|x_1 for all steps
+  weight  = (-(observed_val-(particles_vals^2/20))^2)/(2*theta_obs[1])-log(sqrt(2*theta_obs[1]*pi)) # LOG weights here are from prob density g evaulated at y1|x_1 for all steps
   }
 
 
