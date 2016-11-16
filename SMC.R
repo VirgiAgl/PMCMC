@@ -25,7 +25,8 @@ SMC = function(N, calculate_weight, state_update, observed_process, theta_state,
     
     weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,], theta_obs)
     
-    logl=logl+log(mean(weight)) #log of the estimate of the likelihood
+    logl=logl+log(mean(exp(weight))) #log of the estimate of the likelihood
+    #logl=logl+log(mean(weight)) #log of the estimate of the likelihood
     lik_in_time[i]=logl   #store the likelihood value
     
 
@@ -47,4 +48,5 @@ SMC = function(N, calculate_weight, state_update, observed_process, theta_state,
   out = list(particles_in_time=particles_in_time, particle_mean_in_time=particle_mean_in_time, particle_variance_in_time=particle_variance_in_time, weights_in_time=weights_in_time, lik_in_time=lik_in_time)
   return(out)
  }  
+
 
