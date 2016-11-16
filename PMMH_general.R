@@ -42,7 +42,10 @@ PMMH_linear= function(n_iter,
   
   
   for (i in 1:n_iter){
-    cat("iteration in the MCMC = ", i, "\n")
+    # if (i %% 1000 == 0) {
+    #   cat("iteration in the MCMC = ", i, "\n")
+    # }
+  
     
                                                     #generate new values for the unknow pars
     theta_unknown[1,i+1] = rnorm(1,mean=theta_unknown[1,i], sd=1)  #proposal updating distribution

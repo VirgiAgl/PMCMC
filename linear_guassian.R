@@ -195,19 +195,19 @@ plot_linear
 ##################################################################
 
 source("PMMH_general.R")
+n_iter = 1000
+d = 1      #update only phi
 
- d = 1      #update only phi
+mu = 0.9
+sigma_2 = 0.01
+sigma = sqrt(sigma_2)
+eta_2 = 0.02
+eta = sqrt(eta_2)
+prior_par = c(0,1) # mean and sd of the prior distribution for x1
 
- mu = 0.9
- sigma_2 = 0.01
- sigma = sqrt(sigma_2)
- eta_2 = 0.02
- eta = sqrt(eta_2)
- prior_par = c(0,1) # mean and sd of the prior distribution for x1
+set.seed(27)
 
- set.seed(27)
-
- PMMH_linear = PMMH_linear(n_iter,
+PMMH_linear = PMMH_linear(n_iter,
                     N,
                     d,
                     calculate_weight=calculate_weight_linear_LOG,
@@ -215,7 +215,10 @@ source("PMMH_general.R")
                     observed_process=observed_process_linear,
                     theta_state = c(mu, phi, sigma),
                     theta_obs = c(eta) )
-
+ 
+ plot_PMMH_linear=trace_plot(PMMH_linear$state_values[1,], 
+                        n_iter, 
+                        title = "Markov Chain for the first particle")
 
  ##################################################################
  # Produce plot of SMC in time
