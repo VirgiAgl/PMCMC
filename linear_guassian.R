@@ -130,10 +130,10 @@ plot1 = ggplot() +
         strip.text.x = element_blank(),
         axis.text.x=element_blank(), 
         axis.ticks.x=element_blank(), 
-        axis.text=element_text(size=12), 
-        axis.title=element_text(size=12), 
+        axis.text=element_text(size=10), 
+        axis.title=element_text(size=10), 
         plot.title = element_text(lineheight=.8, face="bold"))
-ggsave("kalman_filter1.pdf")
+ggsave("kalman_filter1.pdf", width = 16, height = 9)
 plot1
 
 
@@ -156,7 +156,7 @@ plot2 = ggplot() +
         axis.text=element_text(size=10), 
         axis.title=element_text(size=10), 
         plot.title = element_text(lineheight=.5, face="bold"))
-ggsave("kalman_filter2.pdf")
+ggsave("kalman_filter2.pdf", width = 16, height = 9)
 plot2
 
 

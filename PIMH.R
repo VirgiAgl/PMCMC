@@ -46,10 +46,11 @@ PIMH = function(n_iter,
     proposed_lik = smc_output$lik_in_time[t]
     
     # compute the accepatance probability
-    acc_prob = min(c(1, exp(proposed_lik-lik_values[i])) )
+    acc_prob = min(c(0, proposed_lik-lik_values[i]) )
     
     # accept or reject the new value
-    if(runif(1) < acc_prob){
+    if (log(runif(1)) < acc_prob) { 
+    #if(runif(1) < acc_prob){
       state_values[, i+1] = proposed_x
       lik_values[i+1] = proposed_lik
       n_acceptance = n_acceptance + 1

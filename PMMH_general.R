@@ -44,10 +44,9 @@ PMMH_linear= function(n_iter,
   for (i in 1:n_iter){
     cat("iteration in the MCMC = ", i, "\n")
     
-    for (i in 1:d){                                                  #generate new values for the unknow pars
-      theta_unknown[d,i+1] = rnorm(1,mean=theta_unknown[d,i], sd=1)  #proposal updating distribution
-      }
-   
+                                                    #generate new values for the unknow pars
+    theta_unknown[1,i+1] = rnorm(1,mean=theta_unknown[1,i], sd=1)  #proposal updating distribution
+
     theta_state[2]=theta_unknown[1,i+1]                              #phi is the second element in the theta_state vector and on the first row in the matrix of unknown pars 
     
     
