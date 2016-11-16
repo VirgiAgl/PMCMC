@@ -172,7 +172,7 @@ plot2
 ##################################################################
 source("PIMH.R")
 
-n_iter = 100
+n_iter = 50
 
 PIMH_linear = PIMH(n_iter, 
                    N, 
@@ -181,6 +181,11 @@ PIMH_linear = PIMH(n_iter,
                    observed_process=observed_process_linear,
                    theta_state = c(mu, phi,sigma),
                    theta_obs = c(eta))
+
+# save data for PIMH linear
+data_path = paste('plots/linear_PIMH_', format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
+save(PIMH_linear, file = data_path)
+
 
 plot_linear=trace_plot(PIMH_linear$state_values[1,], 
                 n_iter, 
@@ -193,10 +198,10 @@ plot_linear
 ##################################################################
 # PMMH for a linear gaussian model
 ##################################################################
+source("PMMH.R")
 
-source("PMMH_general.R")
-n_iter = 1000
-d = 1      #update only phi
+n_iter = 100
+d = 1        #update only phi
 
 mu = 0.9
 sigma_2 = 0.01
@@ -204,8 +209,6 @@ sigma = sqrt(sigma_2)
 eta_2 = 0.02
 eta = sqrt(eta_2)
 prior_par = c(0,1) # mean and sd of the prior distribution for x1
-
-set.seed(27)
 
 PMMH_linear = PMMH_linear(n_iter,
                     N,
@@ -216,67 +219,73 @@ PMMH_linear = PMMH_linear(n_iter,
                     theta_state = c(mu, phi, sigma),
                     theta_obs = c(eta) )
  
- plot_PMMH_linear=trace_plot(PMMH_linear$state_values[1,], 
-                        n_iter, 
-                        title = "Markov Chain for the first particle")
+# save data for PIMH linear
+data_path = paste('plots/linear_PMMH_', format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
+save(PMMH_linear, file = data_path)
 
- ##################################################################
- # Produce plot of SMC in time
- ##################################################################
 
- source("SMC.R")
- 
- N = 100  #number of particles 
+# plot_PMMH_linear=trace_plot(PMMH_linear$state_values[1,], 
+#                         n_iter, 
+#                         title = "Markov Chain for the first particle")
+# 
+# plot_PMMH_par=trace_plot(PMMH_linear$theta_unknown[,1:(n_iter+1)], 
+#                             n_iter, 
+#                             title = "parameter space")
+# 
+# plot(seq(from=1, to=n_iter+1, by=1), 
+#      PMMH_linear$theta_unknown[,1:(n_iter+1)], 
+#      type="l",
+#      xlab = "Iterations",
+#      ylab = "Parameter values")
+
+
+##################################################################
+# Produce plot of SMC in time
+##################################################################
+
+source("SMC.R")
+
+N = 100  #number of particles 
  
 
- # t=8
- observed_process_linear_t2=observed_process_linear[1:8]
- smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
- particles_in_time = smc_output$particles_in_time
- particle_mean_in_time = smc_output$particle_mean_in_time
- # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
- plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
- ggsave("plots/smc_linear_t8.pdf")
- 
- 
- # t=20
- observed_process_linear_t2=observed_process_linear[1:20]
- smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
- particles_in_time = smc_output$particles_in_time
- particle_mean_in_time = smc_output$particle_mean_in_time
- # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
- plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
- ggsave("plots/smc_linear_t20.pdf")
- 
- 
- 
- # t=40
- observed_process_linear_t2=observed_process_linear[1:40]
- smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
- particles_in_time = smc_output$particles_in_time
- particle_mean_in_time = smc_output$particle_mean_in_time
- # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
- plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
- ggsave("plots/smc_linear_t40.pdf")
- 
- 
- 
- 
- # t=80
- observed_process_linear_t2=observed_process_linear[1:80]
- smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
- particles_in_time = smc_output$particles_in_time
- particle_mean_in_time = smc_output$particle_mean_in_time
- # plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
- plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
- ggsave("plots/smc_linear_t80.pdf")
- par(mfrow = c(3, 2))
- 
+# t=8
+observed_process_linear_t2=observed_process_linear[1:8]
+smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+particles_in_time = smc_output$particles_in_time
+particle_mean_in_time = smc_output$particle_mean_in_time
+# plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
+ggsave("plots/smc_linear_t8.pdf")
+
+
+# t=20
+observed_process_linear_t2=observed_process_linear[1:20]
+smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+particles_in_time = smc_output$particles_in_time
+particle_mean_in_time = smc_output$particle_mean_in_time
+# plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
+ggsave("plots/smc_linear_t20.pdf")
 
  
  
- 
+# t=40
+observed_process_linear_t2=observed_process_linear[1:40]
+smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+particles_in_time = smc_output$particles_in_time
+particle_mean_in_time = smc_output$particle_mean_in_time
+# plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
+ggsave("plots/smc_linear_t40.pdf")
 
- 
- 
- 
+
+
+
+# t=80
+observed_process_linear_t2=observed_process_linear[1:80]
+smc_output = SMC(N=N, calculate_weight=calculate_weight_linear, state_update=linear_state_update, observed_process=observed_process_linear_t2, theta_state= c(mu, phi, sigma), theta_obs= c(eta))
+particles_in_time = smc_output$particles_in_time
+particle_mean_in_time = smc_output$particle_mean_in_time
+# plot for the particles trajectories over the state space, along with the actual latent process used to generate the data we train on
+plot_particles_and_latent_process_NOLEGEND(particles_in_time, latent_process_linear)
+ggsave("plots/smc_linear_t80.pdf")

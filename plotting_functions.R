@@ -62,3 +62,13 @@ plot_particles_and_latent_process_NOLEGEND = function(particles_in_time, latent_
     guides(colour=FALSE, alpha=FALSE)+
     theme(legend.position="none", plot.title = element_text(hjust = 0.5))
 }
+
+
+moving_average = function(n_moving, n_iter,X){
+  moving_par = rep(NA, n_iter/n_moving)
+  moving_par[1]= X$theta_unknown[n_moving]/n_moving
+  for (i in seq(2*n_moving, n_iter, by=n_moving)) {
+    moving_par[i/n_moving]=(X$moving_par[i]-X$moving_par[i-n_moving])/n_moving
+  }
+  return(moving_alpha)
+}
