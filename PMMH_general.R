@@ -1,16 +1,15 @@
 source("plotting_functions.R")
 source("SMC.R")
 
-set.seed(27)
 
 PMMH_linear= function(n_iter, 
                 N, 
-                d,              # dimension of the unknown parameter space
+                d,                # dimension of the unknown parameter space
                 calculate_weight, 
                 state_update, 
                 observed_process, 
-                theta_state,     # for the linear model c(mu, phi, sigma)
-                theta_obs) {     # for the linear model c(eta)
+                theta_state,      # for the linear model c(mu, phi, sigma)
+                theta_obs) {      # for the linear model c(eta)
   
   t=length(observed_process)     #number of observed step in times
   n_acceptance=0
@@ -18,10 +17,9 @@ PMMH_linear= function(n_iter,
   state_values = matrix(NA, nrow = t, ncol = n_iter+1 ) #store the state values at each step
   lik_values = vector(length = n_iter+1 )               #store the lik value at each step
   
-  for (i in 1:d){                                       #generate the first value for the unknown pars
-    theta_unknown[d,1] = rnorm(1,mean=1, sd=1)          #to be chosen arbitrarly (assume all unknown pars have the same prior distrubution)
-  }
-  
+                                  #generate the first value for the unknown pars
+  theta_unknown[1,1] = rnorm(1,mean=1, sd=1)          #to be chosen arbitrarly (assume all unknown pars have the same prior distrubution)
+
   theta_state[2]=theta_unknown[1,1]                     #phi is the second element in the theta_state vector and on the first row in the matrix of unknown pars 
   
   # run an SMC for iteration 0
@@ -64,13 +62,13 @@ PMMH_linear= function(n_iter,
     proposed_lik = smc_output$lik_in_time[t]
     
     # compute the acceptance probability
-    first_term = exp(proposed_lik-lik_values[i])
-    second_term = dnorm(theta_unknown[1,i+1], mean=1, sd=1)/dnorm(theta_unknown[1,i],mean=1, sd=1)
-    third_term = dnorm(theta_unknown[1,i],mean = theta_unknown[1,i+1],sd=1)/dnorm(theta_unknown[1,i+1],mean = theta_unknown[1,i],sd=1)
-    acc_prob = min(c(1, first_term*second_term*third_term))
+    first_term = proposed_lik-lik_values[i]
+    second_term = dnorm(theta_unknown[1,i+1], mean=1, sd=1, log = TRUE)-dnorm(theta_unknown[1,i],mean=1, sd=1, log = TRUE)
+    third_term = dnorm(theta_unknown[1,i],mean = theta_unknown[1,i+1],sd=1, log = TRUE)-dnorm(theta_unknown[1,i+1],mean = theta_unknown[1,i],sd=1, log = TRUE)
+    acc_prob = min(c(0, first_term+second_term+third_term))
     
     # accept or reject the new value
-    if(runif(1) < acc_prob){
+    if(log(runif(1)) < acc_prob){
       state_values[, i+1] = proposed_x
       lik_values[i+1] = proposed_lik
       n_acceptance = n_acceptance + 1
@@ -96,8 +94,6 @@ PMMH_linear= function(n_iter,
 }
 
 
-
-set.seed(27)
 PMMH_nonlinear = function(n_iter, 
                        N, 
                        d,               # dimension of the unknown parameter space
