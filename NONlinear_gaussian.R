@@ -82,9 +82,6 @@ PIMH_nonlinear = PIMH(n_iter,
                       theta_obs = c(sigma2_W))
 
 
-plot_nonlinear=tracePlot(PIMH_nonlinear$state_values[1,], observed_process=observed_process_nlinear)
-
-
 plot_nonlinear=trace_plot(PIMH_nonlinear$state_values[1,], n_iter, title = "Trajectory for the firt particle")
 plot_nonlinear
 
@@ -118,7 +115,7 @@ source("PIMH.R")
 source("propagate_SSM.R")
 
 sigma2_V <- 10
-sigma2_W <- 10 #1 or 10
+sigma2_W <- 1 #1 or 10
 theta_obs = c(sigma2_W)
 theta_state = c(sigma2_V)
 
@@ -164,8 +161,9 @@ for (t in vector_times){
 
 # create acceptance rate plot
 acceptance_rate_df$T = as.factor(acceptance_rate_df$t)
+
 acceptance_plot = ggplot(acceptance_rate_df, aes(x = N, y = acceptance_rate, group = T, color=T)) + 
-  geom_point(aes(shape=T), size=2) + geom_line()
+  geom_point(aes(shape=T), size=2) + geom_line() + theme_grey(base_size = 18)
 
 # save data for plot
 data_path = paste('plots/nonlinear_guassian_acceptance_rate__sigma2_W_', sigma2_W, '_n_iter_', n_iter, '_' , format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), '.rdata', sep='')
