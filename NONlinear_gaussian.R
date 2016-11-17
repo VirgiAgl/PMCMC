@@ -151,7 +151,7 @@ for (t in vector_times){
     i = i + 1
     t_i = t_i + 1
 
-    n_iter = 1000 # 50,000 iterations were used in the paper, 1000 takes on the order of one hour
+    n_iter = 10000 # 50,000 iterations were used in the paper, 1000 takes on the order of one hour
     
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 
