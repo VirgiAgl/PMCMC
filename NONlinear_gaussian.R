@@ -37,8 +37,9 @@ calculate_weight_nlinear = function(observed_val, particles_vals, theta_obs){
 
 calculate_weight_nlinear_LOG = function(observed_val, particles_vals, theta_obs){
   # This weight calculation is SSM dependant
-  weight  = (-(observed_val-(particles_vals^2/20))^2)/(2*theta_obs[1])-log(sqrt(2*theta_obs[1]*pi)) # LOG weights here are from prob density g evaulated at y1|x_1 for all steps
-  }
+ # weight  = (-(observed_val-(particles_vals^2/20))^2)/(2*theta_obs[1])-log(sqrt(2*theta_obs[1]*pi)) # LOG weights here are from prob density g evaulated at y1|x_1 for all steps
+  weight  = dnorm(observed_val, mean = particles_vals^2 / 20, sd=sqrt(theta_obs[1]), log=TRUE)
+   }
 
 
 ##################################################################
@@ -150,7 +151,7 @@ for (t in vector_times){
     i = i + 1
     t_i = t_i + 1
 
-    n_iter = 100 # 50,000 iterations were used in the paper, 1000 takes on the order of one hour
+    n_iter = 1000 # 50,000 iterations were used in the paper, 1000 takes on the order of one hour
     
     PIMH_nonlinear = PIMH(n_iter, 
                           N, 

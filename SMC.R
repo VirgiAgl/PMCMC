@@ -35,6 +35,7 @@ SMC = function(N, calculate_weight, state_update, observed_process, theta_state,
     weight_norm = weights/sum(weights)  #normalize the weights
     weights_in_time[i,] = weight_norm #store the weights
     
+    #print((sum(weight_norm^2)^(-1)))
     # Store the value of the mean and the variance (before resampling) 
     #particle_mean_in_time[i,]=sum(weight_norm*particles_in_time[i,])                                    # expected value of a random var
     particle_mean_in_time[i,]=sum(weight_norm*particles_in_time[i,])  

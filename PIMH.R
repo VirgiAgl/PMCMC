@@ -29,7 +29,7 @@ PIMH = function(n_iter,
   # store the first two values
   lik_values[1]=proposed_lik
   state_values[,1]=proposed_x
-  cat("first prop lik", proposed_lik, '\n')
+  #cat("first prop lik", proposed_lik, '\n')
   
   for (i in 1:n_iter){
     # run an SMC for each iteration from 1 to n_iter
@@ -45,9 +45,9 @@ PIMH = function(n_iter,
     proposed_x = smc_output$particles_in_time[,index]
     proposed_lik = smc_output$lik_in_time[t]
     
-    cat("prop_lik",exp(proposed_lik),'\n')
-    cat("lik_val", exp(lik_values[i]),'\n')
-    cat("ratio", exp(proposed_lik)/exp(lik_values[i]),'\n')
+    #cat("prop_lik",exp(proposed_lik),'\n')
+    #cat("lik_val", exp(lik_values[i]),'\n')
+    #cat("ratio", exp(proposed_lik)/exp(lik_values[i]),'\n')
     # compute the accepatance probability
     
     thing = exp(proposed_lik - lik_values[i])
