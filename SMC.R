@@ -18,20 +18,21 @@ SMC = function(N, calculate_weight, state_update, observed_process, theta_state,
   particles_in_time[1,] = rnorm(N, mean=0, sd=1)     # Initialise with proposal density
   logl = 0                                           # Initialize variable to store likelihood values
   
+  
   for (i in 1:t){
     if (i >= 2) { # All steps other than 1st
       particles_in_time[i,] = sapply(X = particles_in_time[i-1,], FUN = state_update, k=i, theta_state)#phi=phi, mu=mu, sigma=sigma)
     }
     
     log_weight = calculate_weight(observed_val = observed_process[i], particles_vals = particles_in_time[i,], theta_obs)
-    log_weight_transformed = log_weight - max(log_weight)
-  
-    logl=logl+log(mean(exp(log_weight))) #log of the estimate of the likelihood
-    #logl=logl+log(mean(weight)) #log of the estimate of the likelihood
+    #subtract the max val for numerical stability
+    const = max(log_weight)
+    weights = exp(log_weight - const)
+
+    logl = logl + const + log(sum(weights)) - log(N)
     lik_in_time[i]=logl   #store the likelihood value
     
-    weight_transformed = exp(log_weight_transformed)
-    weight_norm = weight_transformed/sum(weight_transformed)  #normalize the weights
+    weight_norm = weights/sum(weights)  #normalize the weights
     weights_in_time[i,] = weight_norm #store the weights
     
     # Store the value of the mean and the variance (before resampling) 
