@@ -1,7 +1,6 @@
 source("plotting_functions.R")
 source("SMC.R")
 
-set.seed(27)
 
 PMMH_linear= function(n_iter, 
                 N, 
@@ -48,7 +47,7 @@ PMMH_linear= function(n_iter,
   
     
                                                     #generate new values for the unknow pars
-    theta_unknown[1,i+1] = rnorm(1,mean=theta_unknown[1,i], sd=1)  #proposal updating distribution
+    theta_unknown[1,i+1] = rnorm(1,mean=theta_unknown[1,i], sd=0.3)  #proposal updating distribution
 
     theta_state[2]=theta_unknown[1,i+1]                              #phi is the second element in the theta_state vector and on the first row in the matrix of unknown pars 
     
@@ -99,7 +98,6 @@ PMMH_linear= function(n_iter,
 
 
 
-set.seed(27)
 PMMH_nonlinear = function(n_iter, 
                        N, 
                        d,               # dimension of the unknown parameter space
